@@ -1,0 +1,6 @@
+{
+  "name": "UserStory",
+  "short_name": "UserStory",
+  "start_url": "/",
+  "display": "standalone"
+}

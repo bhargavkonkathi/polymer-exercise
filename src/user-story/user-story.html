@@ -1,0 +1,269 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<script src ="faker.js"></script>
+<link rel="import" href="icons.html">
+<dom-module id="user-story">
+	<template>
+		<style>
+			:host {
+				display: block;
+			}
+
+			app-toolbar {
+				background-color: #4285f4;
+				color: #fff;
+			}
+
+			paper-fab {
+				position: fixed;
+				bottom: 30px;
+				right: 24px
+			}
+
+			
+
+			paper-dropdown-menu {
+				width: 200px;
+				margin-right: 20px;
+			}
+
+			.userImage {
+				display: inline-block;
+				box-sizing: border-box;
+				width: 40px;
+				height: 40px;
+				border-radius: 50%;
+				background-size: cover;
+				background-position: center center;
+				background-repeat: no-repeat;
+			}
+
+			.avatar-container {
+				position: relative;
+				border: 2px solid #3DACE3;
+				border-radius: 50%;
+				height: 150px;
+				padding: 2px;
+				width: 150px;
+				/*margin: 20px;*/
+				margin: 20px auto;
+			}
+
+			.avatar-container .image {
+				border-radius: 50%;
+				height: 100%;
+				background-size: cover;
+				background-position: center center;
+				background-repeat: no-repeat;
+				width: 100%;
+			}
+
+			#search {
+				--primary-text-color: white;
+			}
+
+			#camera-fab {
+				position: absolute;
+				bottom: -5px;
+				right: 5px;
+			}
+
+			#avatarStoryBoard{
+				width: 150px;
+				border-radius: 50%;
+				height: 150px;
+			}
+
+		</style>
+
+		<!--<app-header-layout has-scrolling-region>
+				<app-header slot="header" condenses reveals effects="waterfall">-->
+					<app-toolbar>		
+						<div main-title>User Story</div>
+						<paper-input name="title" id="search" value="{{userStory.title}}" placeholder="search" style="color:white;" type="text">
+							<iron-icon icon="search" slot="prefix"></iron-icon>
+						</paper-input>
+					</app-toolbar>
+				<!--</app-header>
+		</app-header-layout>-->
+
+		<div class="list" role="listbox">
+			<template is="dom-repeat" id="list" items="[[userStories]]">
+				<paper-icon-item on-tap="viewUser">
+					<div class="userImage" style$="background-image:url([[_setUserImage(item)]])" ; slot="item-icon"></div>
+					<paper-item-body two-line>
+						<div>[[item.title]]</div>
+						<div secondary>[[item.location]]</div>
+					</paper-item-body>
+					<paper-icon-button icon="app-icons:chevron-right" alt="next">
+					</paper-icon-button>
+				</paper-icon-item>
+			</template>
+		</div>
+
+		<paper-fab icon='add' on-click='addUserStory'>
+		</paper-fab>
+		<paper-dialog id='dialog' modal style="width: 720px;">
+			<h2 style="text-align:center;">Add User Story</h2>
+			<iron-form id="userStoryForm">
+				<div class="avatar-container">
+					<img id="avatarStoryBoard" src="/images/user-placeholder.jpg" alt="avatar">
+					<paper-fab id="camera-fab" on-click="_cameraClick" icon="image:camera-alt" role="button" tabindex="0"></paper-fab>
+					<input type="file" id="fileInput" on-change="_fileChange" hidden accept="[[acceptedFileTypes]]">
+				</div>	
+				<form style="margin:30px;">
+					<paper-input name="title" id="input" value="{{userStory.title}}" label="Title" error-message="Please enter title" char-counter
+					    minlength="3" maxlength="100" type="text" autofocus required auto-validate></paper-input>
+					<paper-textarea label="Description" id="description" name="description" value="{{userStory.description}}" error-message="Please enter description"
+					    char-counter minlength="3" maxlength="250" rows="2" required auto-validate></paper-textarea>
+					<paper-dropdown-menu label="Country" on-iron-activate="onMenuActivate" id="location" name="location" style="width: 100%;" >
+						<paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="name" required >
+							<template is="dom-repeat" items="[[locations]]">
+								<paper-item style="width:250px;" name="[[item]">[[item]]</paper-item>
+							</template>
+						</paper-listbox>
+					</paper-dropdown-menu>
+				</form>
+			</iron-form>
+			<div class="buttons">
+				<paper-button dialog-dismiss>Cancel</paper-button>
+				<paper-button type on-click='_formSubmit'>Add</paper-button>
+			</div>
+		</paper-dialog>
+		 <paper-toast id="success" text="Story added successfully"></paper-toast>
+	</template>
+
+	<script>
+		/**
+		 * @customElement
+		 * @polymer
+		 */
+		class UserStory extends Polymer.Element {
+			static get is() {
+				return 'user-story';
+			}
+			static get properties() {
+				return {
+					userStory: {
+						type: Object,
+						value: {}
+					},
+					userStories: {
+						type: Array,
+						value: []
+					},
+					locations: {
+						type: Array,
+						value: []
+					},
+					acceptedFileTypes: {
+						type:String,
+						value:'image/jpg,image/jpeg,image/png,image/bmp'
+					}
+				};
+			}
+			addUserStory() {
+				this.userStory = {};
+				this.$.avatarStoryBoard.src = '/images/user-placeholder.jpg';
+				this.$.dialog.open();
+			}
+
+			_formSubmit(e) {
+				// var form = this.$.userStoryForm;
+				// if (form.validate()) {
+				// 	console.log(this.userStory);
+				// }
+				if(this.validate()){
+					this.userStory.location = 
+					this.userStories.unshift(this.userStory); // Inorder show latest in the top
+					this.$.success.show();
+          			this.$.list.render();
+					this.$.dialog.close();
+				}
+				
+
+			}
+
+			ready(){
+				super.ready();
+				this._createFakeData();
+			}
+
+			_setUserImage(item) {
+				return item.image;
+			}
+
+			_cameraClick(){
+				var elem = this.$.fileInput;
+				if (elem && document.createEvent) {
+					var evt = document.createEvent('MouseEvents');
+					evt.initEvent('click', true, false);
+					elem.dispatchEvent(evt);
+				}
+			}
+
+			_fileChange(e){
+				this._hideDelete = true;
+				var files = e.target.files;
+				if(files.length) {
+					var path = e.target.value;
+					var self = this;
+					var reader = new FileReader();
+					reader.onload = function(evt){
+						self.$.avatarStoryBoard.src = evt.target.result;
+						self.userStory.image = evt.target.result;
+					};
+					reader.readAsDataURL(files[0]);	
+				}
+				
+			}
+
+			validate(){
+				if(!this.$.input.invalid && !this.$.location.invalid && 
+				!this.$.description.invalid && this.userStory.image ) return true;
+				else return false;
+			}
+
+			_createFakeData(){
+				var userStories = [];
+				for (var i = 0; i < 250; i++) {
+					var userStoryObject = {};
+					userStoryObject.title = faker.name.title();
+					userStoryObject.description = faker.lorem.sentence();
+					userStoryObject.image = faker.image.avatar() + '?i=' + i;
+					userStoryObject.location=faker.address.country();
+					this.locations.push(userStoryObject.location);
+					userStories.push(userStoryObject);
+				}
+				this.userStories =userStories;
+			}
+
+			onMenuActivate(event, detail){
+				var selected = event.detail.item.textContent;
+				this.userStory.location =selected;
+			}			
+		}
+
+		window.customElements.define(UserStory.is, UserStory);
+	</script>
+</dom-module>
