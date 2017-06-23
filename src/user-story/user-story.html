@@ -79,21 +79,31 @@
 			}
 		</style>
 
-		<!--<app-header-layout has-scrolling-region>
-				<app-header slot="header" condenses reveals effects="waterfall">-->
+		<!--<app-header-layout has-scrolling-region>-->
+				<app-header slot="header" condenses reveals effects="waterfall">
 					<app-toolbar>		
 						<div main-title>User Story</div>
+						<!--<paper-dropdown-menu label="Sort By">
+							<paper-listbox slot="dropdown-content" on-iron-activate="_applySort" attr-for-selected="id" on-iron-activate="{{filterVal::id}}" selected="location">
+								<paper-item id="location">Country</paper-item>
+								<paper-item id="title">Title</paper-item>
+							</paper-listbox>
+						</paper-dropdown-menu>-->
+						<select value="{{sortVal::change}}" selected="title" style="width:100px;height: 30px;margin-top: 20px;margin-right: 20px;">
+							<option value="title">Title</option>
+							<option value="location">Country</option>
+						</select>
 						<paper-input name="title" id="search"  value="{{filterVal::input}}" placeholder="search" style="color:white;" type="text">
 							<iron-icon icon="search" slot="prefix"></iron-icon>
 						</paper-input>
 					</app-toolbar>
-				<!--</app-header>
-		</app-header-layout>-->
+				</app-header>
+		<!--</app-header-layout>-->
 
 		<div class="list" role="listbox">
 			<template is="dom-repeat" id="list" items="[[userStories]]" filter="{{_filter(filterVal)}}" sort="{{_sort(sortVal)}}">
 				<paper-icon-item on-tap="viewUserStory">
-					<div class="userImage" style$="background-image:url([[_setUserImage(item)]])" ; slot="item-icon"></div>
+					<div class="userImage" style$="background-image:url([[_setUserImage(item)]]);" slot="item-icon"></div>
 					<paper-item-body two-line>
 						<div>[[item.title]]</div>
 						<div secondary>[[item.location]]</div>
@@ -175,18 +185,18 @@
 			}
 
 			_formSubmit(e) {
-				var form = this.$.userStoryForm;
-				if (form.validate()) {
-					console.log(this.userStory);
-				}
-				// if (this.validate()&& ! this.view) {
-				// 	this.userStories.unshift(this.userStory); // Inorder show latest in the top
-				// 	this.$.success.show();
-				// 	this.$.list.render();
-				// 	this.$.dialog.close();
-				// }else if(this.view){
-				// 	this.$.dialog.close();
+				// var form = this.$.userStoryForm;
+				// if (form.validate()) {
+				// 	console.log(this.userStory);
 				// }
+				if (this.validate()&& ! this.view) {
+					this.userStories.unshift(this.userStory); // Inorder show latest in the top
+					this.$.success.show();
+					this.$.list.render();
+					this.$.dialog.close();
+				}else if(this.view){
+					this.$.dialog.close();
+				}
 			}
 
 			ready() {
@@ -262,6 +272,25 @@
 				this.$.avatarStoryBoard.src = data.image;
 				this.view = true;
 				this.$.dialog.open();
+			}
+
+			_applySort(event,detail){
+				this._sortVal =event.detail.selected;
+			}
+
+			_sort(val){
+				switch(val) {
+					case 'title':
+					return function(a, b) {
+						if (a.title.toLowerCase() === b.title.toLowerCase()) return 0;
+						return a.title.toLowerCase() < b.title.toLowerCase() ? -1 : 1;
+					};
+					case 'location':
+					return function(a, b) {
+						if (a.location.toLowerCase() === b.location.toLowerCase()) return 0;
+						return a.location.toLowerCase() < b.location.toLowerCase() ? -1 : 1;
+					};
+				}
 			}
 		}
 
