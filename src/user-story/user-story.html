@@ -117,10 +117,10 @@
 					 minlength="3" maxlength="100" type="text" autofocus required auto-validate></paper-input>
 					<paper-textarea label="Description" id="description" name="description" value="{{userStory.description}}" error-message="Please enter description"
 					 char-counter minlength="3" maxlength="250" rows="2" required auto-validate></paper-textarea>
-					<paper-dropdown-menu label="Country" on-iron-activate="onMenuActivate" id="location" name="location" style="width: 100%;">
-						<paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="name" selected="{{userStory.location}}" required>
-							<template is="dom-repeat" items="[[locations]]" >
-								<paper-item style="width:250px;" name="[[item]">[[item]]</paper-item>
+					<paper-dropdown-menu label="Country" id="location" style="width: 100%;">
+						<paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="id" selected="{{userStory.location}}" required>
+							<template is="dom-repeat" items="[[locations]]" as="location" >
+								<paper-item style="width:250px;" id="[[location]]">[[location]]</paper-item>
 							</template>
 						</paper-listbox>
 					</paper-dropdown-menu>
@@ -128,7 +128,7 @@
 			</iron-form>
 			<div class="buttons">
 				<paper-button dialog-dismiss>Cancel</paper-button>
-				<paper-button type on-click='_formSubmit'>Add</paper-button>
+				<paper-button type="submit" on-click='_formSubmit'>Add</paper-button>
 			</div>
 		</paper-dialog>
 		<paper-toast id="success" text="Story added successfully"></paper-toast>
@@ -169,24 +169,24 @@
 			}
 			addUserStory() {
 				this.userStory = {};
+				this.view =false;
 				this.$.avatarStoryBoard.src = '/images/user-placeholder.jpg';
 				this.$.dialog.open();
 			}
 
 			_formSubmit(e) {
-				// var form = this.$.userStoryForm;
-				// if (form.validate()) {
-				// 	console.log(this.userStory);
-				// }
-				if (this.validate()&& ! this.view) {
-					this.userStories.unshift(this.userStory); // Inorder show latest in the top
-					this.$.success.show();
-					this.$.list.render();
+				var form = this.$.userStoryForm;
+				if (form.validate()) {
+					console.log(this.userStory);
 				}
-
-				this.$.dialog.close();
-
-
+				// if (this.validate()&& ! this.view) {
+				// 	this.userStories.unshift(this.userStory); // Inorder show latest in the top
+				// 	this.$.success.show();
+				// 	this.$.list.render();
+				// 	this.$.dialog.close();
+				// }else if(this.view){
+				// 	this.$.dialog.close();
+				// }
 			}
 
 			ready() {
