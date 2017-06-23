@@ -10,6 +10,10 @@
 				background-color:#eeeeee;
 			}
 
+			.list{
+				margin-top:64px;
+			}
+
 			app-toolbar {
 				background-color: #4285f4;
 				color: #fff;
@@ -77,28 +81,28 @@
 				border-radius: 50%;
 				height: 150px;
 			}
+
+			app-header{
+				position: fixed;
+				width: 100%;
+				top: 0;
+    			z-index: 10;
+			}
+
 		</style>
 
-		<!--<app-header-layout has-scrolling-region>-->
-				<app-header slot="header" condenses reveals effects="waterfall">
-					<app-toolbar>		
-						<div main-title>User Story</div>
-						<!--<paper-dropdown-menu label="Sort By">
-							<paper-listbox slot="dropdown-content" on-iron-activate="_applySort" attr-for-selected="id" on-iron-activate="{{filterVal::id}}" selected="location">
-								<paper-item id="location">Country</paper-item>
-								<paper-item id="title">Title</paper-item>
-							</paper-listbox>
-						</paper-dropdown-menu>-->
-						<select value="{{sortVal::change}}" selected="title" style="width:100px;height: 30px;margin-top: 20px;margin-right: 20px;">
-							<option value="title">Title</option>
-							<option value="location">Country</option>
-						</select>
-						<paper-input name="title" id="search"  value="{{filterVal::input}}" placeholder="search" style="color:white;" type="text">
-							<iron-icon icon="search" slot="prefix"></iron-icon>
-						</paper-input>
-					</app-toolbar>
-				</app-header>
-		<!--</app-header-layout>-->
+		<app-header slot="header" fixed condenses reveals effects="waterfall">
+			<app-toolbar>		
+				<div main-title>User Story</div>
+				<select value="{{sortVal::change}}" selected="title" style="width:100px;height: 30px;margin-top: 20px;margin-right: 20px;">
+					<option value="title">Title</option>
+					<option value="location">Country</option>
+				</select>
+				<paper-input name="title" id="search"  value="{{filterVal::input}}" placeholder="search" style="color:white;" type="text">
+					<iron-icon icon="search" slot="prefix"></iron-icon>
+				</paper-input>
+			</app-toolbar>
+		</app-header>
 
 		<div class="list" role="listbox">
 			<template is="dom-repeat" id="list" items="[[userStories]]" filter="{{_filter(filterVal)}}" sort="{{_sort(sortVal)}}">
